@@ -15,6 +15,16 @@ app.post("/fromRoblox", (req, res) => {
     res.send({ status: "ok" });
 });
 
+app.post("/toDiscord", (req, res) => {
+    const { key, action, discordId, content } = req.body;
+    if (key !== API_KEY) return res.status(403).send("Acesso negado!");
+
+    console.log(`[ROBLOX -> DISCORD] (${action}) ${discordId}: ${content}`);
+
+    // Aqui você pode devolver só "ok"
+    return res.send({ status: "ok" });
+});
+
 app.post("/toRoblox", (req, res) => {
     const { key, action, user, content } = req.body;
     if (key !== API_KEY) return res.status(403).send("Acesso negado!");
@@ -53,3 +63,4 @@ if (!PORT) {
 app.listen(PORT, "0.0.0.0", () => {
     console.log(`🌍 API rodando na porta ${PORT}`);
 });
+
