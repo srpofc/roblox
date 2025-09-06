@@ -1,12 +1,15 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
+// 🔑 Sua chave secreta da API
 const API_KEY = "SENHA_ULTRA_SECRETA_123";
 
 const app = express();
 app.use(bodyParser.json());
 
 let messageQueue = [];
+
+// ----- Rotas da API -----
 
 // Roblox -> API
 app.post("/fromRoblox", (req, res) => {
@@ -44,15 +47,13 @@ app.post("/toRoblox", (req, res) => {
     res.send({ status: "ok" });
 });
 
-// PORT detectada automaticamente pelo Railway
+// ----- Porta Railway -----
 const PORT = process.env.PORT;
 if (!PORT) {
-  console.error("❌ Porta não encontrada. Certifique-se de estar rodando no Railway.");
-  process.exit(1);
+    console.error("❌ Porta não encontrada. Certifique-se de rodar no Railway.");
+    process.exit(1);
 }
 
 app.listen(PORT, () => {
-  console.log(`🌍 API rodando na porta ${PORT}`);
+    console.log(`🌍 API rodando na porta ${PORT}`);
 });
-
-
