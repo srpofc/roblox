@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
-const API_KEY = "SENHA_ULTRA_SECRETA_123";
+const API_KEY = process.env.API_KEY;
 
 const app = express();
 app.use(bodyParser.json());
