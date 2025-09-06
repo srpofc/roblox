@@ -2,7 +2,6 @@ const express = require("express");
 const bodyParser = require("body-parser");
 
 const API_KEY = process.env.API_KEY; // Railway Shared Variable
-console.log("🔑 API_KEY do Node:", API_KEY);
 
 
 const app = express();
@@ -57,4 +56,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🌍 API rodando na porta ${PORT}`);
 });
+
 
