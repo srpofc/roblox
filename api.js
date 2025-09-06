@@ -45,7 +45,14 @@ app.post("/toRoblox", (req, res) => {
 });
 
 // PORT detectada automaticamente pelo Railway
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT;
+if (!PORT) {
+  console.error("❌ Porta não encontrada. Certifique-se de estar rodando no Railway.");
+  process.exit(1);
+}
+
 app.listen(PORT, () => {
-    console.log(`🌍 API rodando na porta ${PORT}`);
+  console.log(`🌍 API rodando na porta ${PORT}`);
 });
+
+
