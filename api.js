@@ -3,13 +3,14 @@ const bodyParser = require("body-parser");
 
 const API_KEY = process.env.API_KEY; // Railway Shared Variable
 
-
 const app = express();
 app.use(bodyParser.json());
 
-let messageQueue = [];
+// Filas separadas por jogo
+let queueFusion = [];
+let queueBalneario = [];
 
-// Recebe mensagens do Roblox
+// ==================== ROTAS GERAIS ==================== //
 app.post("/fromRoblox", (req, res) => {
   const { key, userId, action, value } = req.body;
   if (key !== API_KEY) return res.status(403).send("Acesso negado!");
@@ -17,31 +18,50 @@ app.post("/fromRoblox", (req, res) => {
   res.send({ status: "ok" });
 });
 
-// Recebe retorno do Roblox para Discord
 app.post("/toDiscord", async (req, res) => {
   const { key, action, discordId, content } = req.body;
   if (key !== API_KEY) return res.status(403).send("Acesso negado!");
-
   console.log(`[ROBLOX -> DISCORD] (${action}) ${discordId}: ${content}`);
-
-  // Aqui você pode processar com interação do Discord, se quiser
   return res.send({ status: "ok" });
 });
 
-// Node para Roblox checar mensagens
+// ==================== JOGO FUSION ==================== //
 app.post("/toRoblox", (req, res) => {
-  const { key, action, user, content } = req.body;
+  const { key, action, content } = req.body;
   if (key !== API_KEY) return res.status(403).send("Acesso negado!");
 
   if (action === "mensagem") {
-    console.log(`[BOT -> ROBLOX] Nova mensagem enfileirada: ${content}`);
-    messageQueue.push(content);
+    console.log(`[BOT FUSION -> ROBLOX] ${content}`);
+    queueFusion.push(content);
     return res.send({ status: "mensagem_recebida" });
   }
 
   if (action === "check") {
-    if (messageQueue.length > 0) {
-      const msg = messageQueue.shift();
+    if (queueFusion.length > 0) {
+      const msg = queueFusion.shift();
+      return res.send({ status: "mensagem_enviada", content: msg });
+    } else {
+      return res.send({ status: "ok" });
+    }
+  }
+
+  res.send({ status: "ok" });
+});
+
+// ==================== JOGO BALNEÁRIO ==================== //
+app.post("/toRobloxBalneario", (req, res) => {
+  const { key, action, content } = req.body;
+  if (key !== API_KEY) return res.status(403).send("Acesso negado!");
+
+  if (action === "mensagem") {
+    console.log(`[BOT BALNEARIO -> ROBLOX] ${content}`);
+    queueBalneario.push(content);
+    return res.send({ status: "mensagem_recebida" });
+  }
+
+  if (action === "check") {
+    if (queueBalneario.length > 0) {
+      const msg = queueBalneario.shift();
       return res.send({ status: "mensagem_enviada", content: msg });
     } else {
       return res.send({ status: "ok" });
@@ -56,5 +76,3 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🌍 API rodando na porta ${PORT}`);
 });
-
-
